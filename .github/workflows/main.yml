@@ -20,6 +20,13 @@ jobs:
       - name: Display extracted files
         run: dir "${{ github.workspace }}\\install\\win"
 
+      - name: Run PowerShell Script
+        run: ${{ github.workspace }}\install\win\build-download-prereq.ps1
+        shell: pwsh
+
+      - name: Display extracted files
+        run: dir "${{ github.workspace }}\\install\\win\\redist"
+
       - name: Build AIP
         uses: caphyon/advinst-github-action@v2.0
         with:
