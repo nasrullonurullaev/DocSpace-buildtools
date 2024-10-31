@@ -21,7 +21,10 @@ jobs:
         run: dir "${{ github.workspace }}\\install\\win"
 
       - name: Run PowerShell Script
-        run: ${{ github.workspace }}\install\win\build-download-prereq.ps1
+        run: |
+         $env:DOCUMENT_SERVER_VERSION_EE = 'latest'
+         $env:DOCUMENT_SERVER_VERSION_CE = 'latest'
+         & "${{ github.workspace }}\install\win\build-download-prereq.ps1"
         shell: pwsh
 
       - name: Display extracted files
