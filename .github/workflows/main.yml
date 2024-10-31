@@ -27,6 +27,12 @@ jobs:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ${{ github.workspace }}\install\win\OpenResty.aip
+        with:
+          advinst-version: '20.7.1'
+          advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+          advinst-enable-automation: 'true'
+          aip-path: ${{ github.workspace }}\install\win\OpenSearch.aip
+          
       
       - name: Display publsih
         run: dir "${{ github.workspace }}\\install\\win\publish"
