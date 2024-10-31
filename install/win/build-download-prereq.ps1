@@ -50,7 +50,7 @@ switch ( $env:DOCUMENT_SERVER_VERSION_CE )
 
 $psql_version = '14.0'
 
-$path_prereq = "${pwd}\buildtools\install\win\"
+$path_prereq = "${pwd}\install\win\"
 
 $opensearch_version = '2.11.1'
 
@@ -110,7 +110,7 @@ $nuget_packages = @(
   }
 )
 
-$path_enterprise_prereq = "${pwd}\buildtools\install\win\redist\"
+$path_enterprise_prereq = "${pwd}\install\win\redist\"
 
 $enterprise_prerequisites = @(
   @{
@@ -217,7 +217,5 @@ $enterprise_prerequisites = @(
 )
 
 DownloadComponents $prerequisites $path_prereq
-
-DownloadComponents $nuget_packages $path_nuget_packages
 
 DownloadComponents $enterprise_prerequisites $path_enterprise_prereq
