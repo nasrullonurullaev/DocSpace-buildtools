@@ -1,5 +1,10 @@
-$AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12,Tls13'
+# Set only the supported security protocols explicitly
+$AllProtocols = [System.Net.SecurityProtocolType]::Tls -bor `
+                [System.Net.SecurityProtocolType]::Tls11 -bor `
+                [System.Net.SecurityProtocolType]::Tls12
+
 [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
+
 
 # Function 'DownloadComponents' downloads some components that need on build satge
 #
