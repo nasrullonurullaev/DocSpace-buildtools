@@ -27,11 +27,27 @@ jobs:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ${{ github.workspace }}\install\win\OpenResty.aip
+      - name: Build AIP
+        uses: caphyon/advinst-github-action@v2.0  
         with:
           advinst-version: '20.7.1'
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ${{ github.workspace }}\install\win\OpenSearch.aip
+      - name: Build AIP
+        uses: caphyon/advinst-github-action@v2.0  
+        with:
+          advinst-version: '20.7.1'
+          advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+          advinst-enable-automation: 'true'
+          aip-path: ${{ github.workspace }}\install\win\OpenSearchStack.aip
+      - name: Build AIP
+        uses: caphyon/advinst-github-action@v2.0  
+        with:
+          advinst-version: '20.7.1'
+          advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+          advinst-enable-automation: 'true'
+          aip-path: ${{ github.workspace }}\install\win\DocSpace.aip
           
       
       - name: Display publsih
