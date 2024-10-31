@@ -62,13 +62,24 @@ jobs:
       
       - name: Display publsih
         run: dir "${{ github.workspace }}\\install\\win\publish"
-
-
-      - name: Release
-        if: ${{ success() }}
-        uses: softprops/action-gh-release@v2
+     
+      - name: Publish artifact
+        uses: actions/upload-artifact@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: DocSpace
-          tag_name: 1.0.0
-          files: ${{ github.workspace }}/install/win/publish/ONLYOFFICE*.exe
+          name: DocSpaceCommunity
+          path: ${{ github.workspace }}/install/win/publish/ONLYOFFICE_DocSpace_Community_Win-install.v1.0.0.exe
+
+      - name: Publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DocSpaceEnterrpise
+          path: ${{ github.workspace }}/install/win/publish/ONLYOFFICE_DocSpace_Enterprise_Win-install.v1.0.0.exe
+
+      #- name: Release
+      #  if: ${{ success() }}
+       # uses: softprops/action-gh-release@v2
+        #with:
+         # token: ${{ secrets.GITHUB_TOKEN }}
+          #name: DocSpace
+          #tag_name: 1.0.0
+          #files: ${{ github.workspace }}/install/win/publish/ONLYOFFICE*.exe
