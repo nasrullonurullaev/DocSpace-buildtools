@@ -62,3 +62,13 @@ jobs:
       
       - name: Display publsih
         run: dir "${{ github.workspace }}\\install\\win\publish"
+
+
+      - name: Release
+        if: ${{ success() }}
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: DocSpace
+          tag_name: 1.0.0
+          files: ${{ github.workspace }}/install/win/publish/ONLYOFFICE*.exe
