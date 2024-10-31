@@ -1,0 +1,21 @@
+name: Download and Unzip
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download_and_unzip:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download zip file
+        run: Invoke-WebRequest -Uri "https://repo-doc-onlyoffice-com.s3.eu-west-1.amazonaws.com/windows/docspace/win.zip" -OutFile "file.zip"
+
+      - name: Unzip file to install/win
+        run: Expand-Archive -Path "file.zip" -DestinationPath "${{ github.workspace }}\\install\\win"
+
+      - name: Display extracted files
+        run: dir "${{ github.workspace }}\\install\\win"
