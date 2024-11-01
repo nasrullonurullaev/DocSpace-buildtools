@@ -1,10 +1,10 @@
-name: Download and Unzip
+name: DocSpace Windows Build
 
 on:
   workflow_dispatch:
 
 jobs:
-  download_and_unzip:
+  build_docspace_windows:
     runs-on: windows-latest
 
     steps:
@@ -17,69 +17,62 @@ jobs:
       - name: Unzip file to install/win
         run: Expand-Archive -Path "file.zip" -DestinationPath "${{ github.workspace }}\\install\\win"
 
-      - name: Display extracted files
-        run: dir "${{ github.workspace }}\\install\\win"
-
-      - name: Run PowerShell Script
+      - name: Download prerequisites
         run: |
-         $env:DOCUMENT_SERVER_VERSION_EE = 'latest'
-         $env:DOCUMENT_SERVER_VERSION_CE = 'latest'
-         & "${{ github.workspace }}\install\win\build-download-prereq.ps1"
+          $env:DOCUMENT_SERVER_VERSION_EE = 'latest'
+          $env:DOCUMENT_SERVER_VERSION_CE = 'latest'
+          & "${{ github.workspace }}\install\win\build-download-prereq.ps1"
         shell: pwsh
-
-      - name: Display extracted files
-        run: dir "${{ github.workspace }}\\install\\win\\redist"
-
-      - name: Build AIP
+        
+      - name: Build OpenResty
         uses: caphyon/advinst-github-action@v2.0
         with:
           advinst-version: '20.7.1'
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ${{ github.workspace }}\install\win\OpenResty.aip
-      - name: Build AIP
-        uses: caphyon/advinst-github-action@v2.0  
+
+      - name: Build OpenSearch
+        uses: caphyon/advinst-github-action@v2.0
         with:
           advinst-version: '20.7.1'
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ${{ github.workspace }}\install\win\OpenSearch.aip
-      - name: Build AIP
-        uses: caphyon/advinst-github-action@v2.0  
+
+      - name: Build OpenSearchStack
+        uses: caphyon/advinst-github-action@v2.0
         with:
           advinst-version: '20.7.1'
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ${{ github.workspace }}\install\win\OpenSearchStack.aip
-      - name: Build AIP
-        uses: caphyon/advinst-github-action@v2.0  
+
+      - name: Build DocSpace
+        uses: caphyon/advinst-github-action@v2.0
         with:
           advinst-version: '20.7.1'
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ${{ github.workspace }}\install\win\DocSpace.aip
-          
-      
-      - name: Display publsih
-        run: dir "${{ github.workspace }}\\install\\win\publish"
-     
-      - name: Publish artifact
+
+      - name: Publish Community artifact
         uses: actions/upload-artifact@v4
         with:
           name: DocSpaceCommunity
           path: ${{ github.workspace }}/install/win/publish/ONLYOFFICE_DocSpace_Community_Win-install.v1.0.0.exe
 
-      - name: Publish artifact
+      - name: Publish Enterprise artifact
         uses: actions/upload-artifact@v4
         with:
-          name: DocSpaceEnterrpise
+          name: DocSpaceEnterprise
           path: ${{ github.workspace }}/install/win/publish/ONLYOFFICE_DocSpace_Enterprise_Win-install.v1.0.0.exe
 
-      #- name: Release
-      #  if: ${{ success() }}
-       # uses: softprops/action-gh-release@v2
-        #with:
-         # token: ${{ secrets.GITHUB_TOKEN }}
-          #name: DocSpace
-          #tag_name: 1.0.0
-          #files: ${{ github.workspace }}/install/win/publish/ONLYOFFICE*.exe
+      # - name: Release
+      #   if: ${{ success() }}
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     name: DocSpace
+      #     tag_name: 1.0.0
+      #     files: ${{ github.workspace }}/install/win/publish/ONLYOFFICE*.exe
