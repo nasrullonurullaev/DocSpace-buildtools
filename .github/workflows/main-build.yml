@@ -1,16 +1,24 @@
 name: 4testing multiarch-build
 
 on:
+  workflow_dispatch:
+    inputs:
+      branches:
+        description: 'Branches for multiarch build'
+        required: true
+        type: string
+      zap:
+        description: 'Run ZAP scanning after build?'
+        type: boolean
   repository_dispatch:
     types:
-      - cron-trigger-action
       - config-trigger-action
       - client-trigger-action
       - server-trigger-action
 
 env:
   DOCKER_PATH: "/install/docker"
-  REPO: "onlyoffice"
+  REPO: "nasrullonurullaev5"
   DOCKER_IMAGE_PREFIX: "4testing-docspace"
   DOCKERFILE: "Dockerfile.app"
 
@@ -21,7 +29,7 @@ jobs:
     strategy:
       matrix:
         platform: [linux/amd64]
-        branch: ${{ github.event.client_payload.branches }}
+        branch: ${{ fromJson(inputs.branches) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -66,4 +74,3 @@ jobs:
           --push
 
         shell: bash
-
