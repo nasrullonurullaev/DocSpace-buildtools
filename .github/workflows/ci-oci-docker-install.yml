@@ -6,6 +6,14 @@ on:
     paths:
       - '.github/workflows/ci-oci-docker-install.yml'
       - 'install/OneClickInstall/install-Docker.sh'
+  push:
+    branches:
+      - 'hotfix/**'
+      - 'release/**'
+      - 'develop'
+    paths:
+      - 'install/OneClickInstall/install-Docker.sh'
+      - 'install/docker/*.yml'
   workflow_dispatch:
     inputs:
       offline:
@@ -20,7 +28,14 @@ jobs:
     steps:
       - name: Determine Branch Name
         run: |
-          BRANCH_NAME=$([ "${{ github.event_name }}" = "pull_request" ] && echo "${{ github.event.pull_request.head.ref }}" || echo "${GITHUB_REF#refs/heads/}")
+          case "${{ github.event_name }}" in
+            "pull_request")
+              BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+              ;;
+            *)
+              BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+              ;;
+          esac
           echo "BRANCH_NAME=${BRANCH_NAME:-master}" >> $GITHUB_ENV
 
       - name: Free Disk Space
@@ -67,10 +82,17 @@ jobs:
           esac
 
       - name: Checkout repository
-        if: ${{ github.event.inputs.offline == 'true' }}
         uses: actions/checkout@v4
         with:
           ref: ${{ env.BRANCH_NAME }}
+
+      - name: "Checking Docker scripts for errors"
+        run: |
+          set -eux
+          sudo apt-get install -y shellcheck
+          find install/docker -type f -name "*.sh" | cat - <(echo "install/OneClickInstall/install-Docker.sh") \
+            | xargs shellcheck --exclude="$(awk '!/^#|^$/ {print $1}' tests/lint/sc_ignore | paste -sd ",")" --severity=warning | tee sc_output
+          awk '/\(warning\):/ {w++} /\(error\):/ {e++} END {if (w+e) printf "::warning ::ShellCheck detected %d warnings and %d errors\n", w+0, e+0}' sc_output
 
       - name: Free Disk Space
         if: ${{ github.event.inputs.offline == 'true' }}
