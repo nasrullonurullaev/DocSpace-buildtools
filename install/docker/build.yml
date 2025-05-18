@@ -48,12 +48,7 @@ services:
       target: people_server
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-people-server:${DOCKER_TAG}"
 
-  onlyoffice-socket:
-    build:
-      context:  ./
-      dockerfile: "${DOCKERFILE}"
-      target: socket
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-socket:${DOCKER_TAG}"
+
 
   onlyoffice-studio-notify:
     build:
@@ -83,12 +78,7 @@ services:
       target: studio
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio:${DOCKER_TAG}"
 
-  onlyoffice-ssoauth:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: ssoauth
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
+
 
   onlyoffice-bin-share:
     build:
@@ -104,19 +94,21 @@ services:
       target: wait_bin_share
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-wait-bin-share:${DOCKER_TAG}"
 
-  onlyoffice-doceditor:
-    build:
-      context:  ./
-      dockerfile: "${DOCKERFILE}"
-      target: doceditor
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}"
 
-  onlyoffice-login:
+
+  onlyoffice-sdk:
     build:
       context:  ./
       dockerfile: "${DOCKERFILE}"
-      target: login
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
+      target: sdk
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-sdk:${DOCKER_TAG}"
+
+  onlyoffice-node:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: docspace_node_services
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-node:${DOCKER_TAG}"
     
   onlyoffice-router:
     build:
