@@ -3,6 +3,7 @@ from jsonpath_ng import jsonpath, parse
 from os import environ
 from multipledispatch import dispatch
 from netaddr import *
+from subprocess import call
 
 filePath = None
 saveFilePath = None
@@ -16,6 +17,7 @@ SERVICE_PORT = os.environ["SERVICE_PORT"] if environ.get("SERVICE_PORT") else "5
 URLS = os.environ["URLS"] if environ.get("URLS") else "http://0.0.0.0:"
 PATH_TO_CONF = os.environ["PATH_TO_CONF"] if environ.get("PATH_TO_CONF") else "/app/" + PRODUCT + "/config"
 LOG_DIR = os.environ["LOG_DIR"] if environ.get("LOG_DIR") else "/var/log/" + PRODUCT
+SRC_PATH = os.environ.get("SRC_PATH", "/var/www")
 ROUTER_HOST = os.environ["ROUTER_HOST"] if environ.get("ROUTER_HOST") else "onlyoffice-router"
 SOCKET_HOST = os.environ["SOCKET_HOST"] if environ.get("SOCKET_HOST") else "onlyoffice-socket"
 
@@ -263,6 +265,12 @@ jsonData["Redis"].update(REDIS_USER_NAME) if REDIS_USER_NAME is not None else No
 jsonData["Redis"].update(REDIS_PASSWORD) if REDIS_PASSWORD is not None else None
 writeJsonFile(filePath, jsonData)
 
+filePath = "/var/www/services/ASC.Migration.Runner/service/appsettings.runner.json"
+jsonData = openJsonFile(filePath)
+updateJsonData(jsonData, "$.options.Providers[0].ConnectionString", "Server=" + MYSQL_CONNECTION_HOST + ";Database=" + MYSQL_DATABASE + ";User ID=" + MYSQL_USER + ";Password=" + MYSQL_PASSWORD + ";Command Timeout=100")
+updateJsonData(jsonData, "$.options.TeamlabsiteProviders[0].ConnectionString", "Server=" + MYSQL_CONNECTION_HOST + ";Database=" + MYSQL_DATABASE + ";User ID=" + MYSQL_USER + ";Password=" + MYSQL_PASSWORD + ";Command Timeout=100")
+writeJsonFile(filePath, jsonData)
+
 if LOG_LEVEL:
     filePath = "/app/onlyoffice/config/nlog.config"
     with open(filePath, 'r') as f:
@@ -281,5 +289,11 @@ if os.path.exists(PLUGINS_DIR) and not os.path.exists(DATA_PLUGINS_DIR):
         dpd_item = os.path.join(DATA_PLUGINS_DIR, item)
         shutil.copytree(pd_item, dpd_item) if os.path.isdir(pd_item) else shutil.copy2(pd_item, dpd_item)
 
-run = RunServices(SERVICE_PORT, PATH_TO_CONF)
-run.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE)
+if RUN_FILE == "supervisord -n":
+    dll = os.path.join(SRC_PATH, "services", "ASC.Migration.Runner", "service", "ASC.Migration.Runner.dll")
+    if os.path.isfile(dll):
+        call(f"dotnet {dll} standalone=true", shell=True)
+    call("supervisord -n", shell=True)
+else:
+    run = RunServices(SERVICE_PORT, PATH_TO_CONF)
+    run.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE)
