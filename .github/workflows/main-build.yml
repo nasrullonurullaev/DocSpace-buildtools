@@ -17,7 +17,7 @@ on:
 
 env:
   DOCKER_PATH: "/install/docker"
-  REPO: "onlyoffice"
+  REPO: "nasrullonurullaev5"
   DOCKER_IMAGE_PREFIX: "4testing-docspace"
   DOCKERFILE: "Dockerfile.app"
 
@@ -67,7 +67,7 @@ jobs:
           export DOCKER_TAG
           echo "DOCKER_TAG=${DOCKER_TAG}" >> ${GITHUB_OUTPUT}
           docker buildx bake --sbom=true --provenance=mode=max -f build.yml \
-          --set *.args.GIT_BRANCH=${{ matrix.branch }} \
+          --set *.args.GIT_BRANCH=develop \
           --set *.args.PRODUCT_VERSION=${PRODUCT_VERSION} \
           --set *.args.BUILD_NUMBER=${BUILD_NUMBER} \
           --set *.platform=linux/amd64 \
@@ -75,28 +75,3 @@ jobs:
           --push
 
         shell: bash
-
-  trigger-oci-docker:
-    name: Trigger ci-oci-docker-install Workflow
-    needs: build
-    if: ${{ needs.build.result == 'success' }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        branch: ${{ github.event.client_payload.branches || fromJson(inputs.branches) }}
-    steps:
-      - name: Wait for Docker Hub tag to appear
-        shell: bash
-        env:
-          DOCKER_TAG: ${{ needs.build.outputs.DOCKER_TAG }}
-        run: |
-          echo "Waiting for images with tag ${{ env.DOCKER_TAG }} to appear on Docker Hub..."
-          curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/${{ matrix.branch }}/.github/scripts/docker-images-availability.sh \
-            | sudo GITHUB_REPOSITORY=${{ github.repository }} BRANCH=${{ matrix.branch }} DOCKER_REPOSITORY=${{ env.REPO }} DOCKER_PREFIX=${{ env.DOCKER_IMAGE_PREFIX }} DOCKER_TAG=${{ env.DOCKER_TAG }} bash
-
-      - name: Trigger ci-oci-docker-install Workflow
-        env:
-          GH_TOKEN: ${{ secrets.TOKEN }}
-        run: |
-          echo "OCI docker test on branch ${{ matrix.branch }}"
-          gh workflow run "ci-oci-docker-install.yml" --repo "${{ github.repository }}" --ref "${{ matrix.branch }}" --field offline=false --field testing=true
