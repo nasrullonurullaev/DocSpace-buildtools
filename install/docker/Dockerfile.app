@@ -188,7 +188,7 @@ RUN echo "--- install runtime node.22 ---" && \
     chown onlyoffice:onlyoffice /var/www -R && \
     chown onlyoffice:onlyoffice /run -R && \
     apt-get -y update && \
-    apt-get install -yq --no-install-recommends \
+    apt-get install -yq \
     sudo \
     supervisor \
     python3-pip && \
