@@ -13,7 +13,7 @@ ARG PRODUCT_VERSION=0.0.0
 ARG BUILD_NUMBER=0
 ARG DEBUG_INFO="true"
 
-ARG BUILDTOOLS_REPO="https://github.com/ONLYOFFICE/DocSpace-buildtools.git"
+ARG BUILDTOOLS_REPO="https://github.com/nasrullonurullaev/DocSpace-buildtools.git"
 ARG SERVER_REPO="https://github.com/ONLYOFFICE/DocSpace-Server.git"
 ARG CLIENT_REPO="https://github.com/ONLYOFFICE/DocSpace-Client.git"
 
@@ -28,8 +28,8 @@ RUN <<EOF
 #!/bin/bash
 echo "--- clone resources ---"
 
-git clone --recurse-submodules -b $(echo "$(git ls-remote --exit-code --heads "${BUILDTOOLS_REPO}" "${GIT_BRANCH}"\
- > /dev/null 2>&1 && echo "${GIT_BRANCH}" || echo "${FALLBACK_BRANCH}")") --depth 30 ${BUILDTOOLS_REPO} ${SRC_PATH}/buildtools && \
+git clone --recurse-submodules -b $(echo "$(git ls-remote --exit-code --heads "${BUILDTOOLS_REPO}" "release/v4.5.0"\
+ > /dev/null 2>&1 && echo "release/v4.5.0" || echo "${FALLBACK_BRANCH}")") --depth 30 ${BUILDTOOLS_REPO} ${SRC_PATH}/buildtools && \
 
 git clone --recurse-submodules -b $(echo "$(git ls-remote --exit-code --heads "${SERVER_REPO}" "${GIT_BRANCH}"\
  > /dev/null 2>&1 && echo "${GIT_BRANCH}" || echo "${FALLBACK_BRANCH}")") --depth 30 ${SERVER_REPO} ${SRC_PATH}/server && \
@@ -149,13 +149,10 @@ RUN echo "--- install runtime aspnet.9 ---" && \
     mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
     apt-get -y update && \
-    apt-get install -yq \
+    apt-get install -yq --no-install-recommends \
     sudo \
     adduser \
-    nano \
-    curl \
     supervisor \
-    vim \
     python3-pip \
     libgdiplus && \
     pip3 install --upgrade --break-system-packages jsonpath-ng multipledispatch netaddr netifaces requests && \
@@ -191,11 +188,8 @@ RUN echo "--- install runtime node.22 ---" && \
     chown onlyoffice:onlyoffice /var/www -R && \
     chown onlyoffice:onlyoffice /run -R && \
     apt-get -y update && \
-    apt-get install -yq \ 
+    apt-get install -yq --no-install-recommends \ 
     sudo \
-    nano \
-    curl \
-    vim \
     supervisor \
     python3-pip && \
     pip3 install --upgrade --break-system-packages jsonpath-ng multipledispatch netaddr netifaces requests && \
@@ -226,8 +220,6 @@ RUN echo "--- install runtime eclipse-temurin:21 ---" && \
     apt-get install -y --no-install-recommends \
     sudo \
     bash \
-    nano \
-    curl \
     supervisor && \
     echo "--- clean up ---" && \
     apt-get clean && \
