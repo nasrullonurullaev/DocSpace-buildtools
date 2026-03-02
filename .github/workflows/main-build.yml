@@ -66,7 +66,7 @@ jobs:
         run: |
           cd .${DOCKER_PATH}
           docker buildx bake -f build.hcl ${{ matrix.service }}-services \
-            --set "*.args.GIT_BRANCH=${{ matrix.branch }}" \
+            --set "*.args.GIT_BRANCH=develop" \
             --set "*.args.PRODUCT_VERSION=${{ env.PRODUCT_VERSION }}" \
             --set "*.args.BUILD_NUMBER=${{ github.run_number }}" \
             --set "*.platform=linux/amd64" \
