@@ -583,6 +583,11 @@ ENV PATH_TO_CONF=/app/onlyoffice/config
 
 WORKDIR /usr/bin/
 
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends supervisor \
+ && rm -rf /var/lib/apt/lists/* /tmp/*
+USER onlyoffice
+
 COPY --from=src --chown=onlyoffice:onlyoffice ${SRC_PATH}/buildtools/install/docker/docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=src --chown=onlyoffice:onlyoffice ${SRC_PATH}/buildtools/install/docker/config/supervisor/dotnet_services.conf /etc/supervisor/conf.d/supervisord.conf
 
@@ -627,6 +632,11 @@ ENV PATH_TO_CONF=/app/onlyoffice/config
 
 WORKDIR /usr/bin/
 
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends supervisor \
+ && rm -rf /var/lib/apt/lists/* /tmp/*
+USER onlyoffice
+
 COPY --from=src --chown=onlyoffice:onlyoffice ${SRC_PATH}/buildtools/install/docker/docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=src --chown=onlyoffice:onlyoffice ${SRC_PATH}/buildtools/install/docker/config/supervisor/node_services.conf /etc/supervisor/conf.d/supervisord.conf
 
@@ -642,6 +652,11 @@ CMD ["supervisord", "-n"]
 ## Java Services ##
 FROM javarun AS java-services
 ENV LOG_DIR=/var/log/onlyoffice
+
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends supervisor \
+ && rm -rf /var/lib/apt/lists/* /tmp/*
+USER onlyoffice
 
 COPY --from=src --chown=onlyoffice:onlyoffice ${SRC_PATH}/buildtools/install/docker/docker-identity-entrypoint.sh /usr/bin/docker-identity-entrypoint.sh
 COPY --from=src --chown=onlyoffice:onlyoffice ${SRC_PATH}/buildtools/install/docker/config/supervisor/java_services.conf /etc/supervisor/conf.d/supervisord.conf
