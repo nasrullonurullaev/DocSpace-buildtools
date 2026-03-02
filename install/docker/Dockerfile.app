@@ -5,7 +5,7 @@ ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:10.0-noble"
 
 # Image resources
 FROM python:3.12-slim AS src
-ARG GIT_BRANCH="master"
+ARG GIT_BRANCH="develop"
 ARG FALLBACK_BRANCH="develop"
 ARG SRC_PATH
 ARG BUILD_PATH
