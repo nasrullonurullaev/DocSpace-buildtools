@@ -149,7 +149,7 @@ RUN echo "--- install runtime aspnet.9 ---" && \
     mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
     apt-get -y update && \
-    apt-get install -yq --no-install-recommends \
+    apt-get install -yq \
     sudo \
     adduser \
     supervisor \
