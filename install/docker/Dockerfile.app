@@ -152,7 +152,6 @@ RUN echo "--- install runtime aspnet.9 ---" && \
     apt-get install -yq \
     sudo \
     adduser \
-    supervisor \
     python3-pip \
     libgdiplus && \
     pip3 install --upgrade --break-system-packages jsonpath-ng multipledispatch netaddr netifaces requests && \
@@ -190,7 +189,6 @@ RUN echo "--- install runtime node.22 ---" && \
     apt-get -y update && \
     apt-get install -yq \
     sudo \
-    supervisor \
     python3-pip && \
     pip3 install --upgrade --break-system-packages jsonpath-ng multipledispatch netaddr netifaces requests && \
     echo "--- clean up ---" && \
@@ -219,8 +217,7 @@ RUN echo "--- install runtime eclipse-temurin:21 ---" && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     sudo \
-    bash \
-    supervisor && \
+    bash && \
     echo "--- clean up ---" && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/*
