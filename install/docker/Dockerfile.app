@@ -69,8 +69,8 @@ COPY --from=src ${SRC_PATH}/server/ .
 
 RUN echo "--- build/publish docspace-server .net 10.0 ---" && \
     dotnet build ASC.Web.slnf && \
-    dotnet build ASC.Migrations.sln -c Release -r linux-x64 -m:1 --property:OutputPath=${SRC_PATH}/publish/services/ASC.Migration.Runner/service/ --no-incremental && \
-    dotnet publish ASC.Web.slnf -c Release -r linux-x64 --self-contained false -p PublishProfile=ReleaseProfile && \
+    dotnet build ASC.Migrations.sln -c Release -r linux-x64 --self-contained false --property:OutputPath=${SRC_PATH}/publish/services/ASC.Migration.Runner/service/ -p:DebugType=None -p:DebugSymbols=false -p:UseAppHost=false && \
+    dotnet publish ASC.Web.slnf -c Release -r linux-x64 --self-contained false -p PublishProfile=ReleaseProfile -p:DebugType=None -p:DebugSymbols=false -p:UseAppHost=false && \
     dotnet nuget locals all --clear && \
     rm -rf ${SRC_PATH}/server/*
 
